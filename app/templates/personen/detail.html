@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}{{ person.name_mit_spitzname }}{% endblock %}
+
+{% block content %}
+  <h1>{{ person.name_mit_spitzname }}</h1>
+  <style>
+    /* Nur in detail.html: Tabs etwas größer darstellen */
+    .nav-tabs .nav-link {
+      font-size: 1.2rem !important;
+    }
+  </style>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs" id="personTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active"
+              id="stammdaten-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#stammdaten"
+              type="button"
+              role="tab"
+              aria-controls="stammdaten"
+              aria-selected="true">
+        Stammdaten
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link"
+              id="lernfelder-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#lernfelder"
+              type="button"
+              role="tab"
+              aria-controls="lernfelder"
+              aria-selected="false">
+        Lernfelder & Themen
+      </button>
+    </li>
+     <li class="nav-item" role="presentation">
+      <button class="nav-link"
+              id="eintragungen-woche-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#eintragungen_woche"
+              type="button"
+              role="tab"
+              aria-controls="eintragungen_woche"
+              aria-selected="false">
+        Eintragungen Woche
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link"
+              id="eintragungen-lernfeld-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#eintragungen_lernfeld"
+              type="button"
+              role="tab"
+              aria-controls="eintragungen_lernfeld"
+              aria-selected="false">
+        Eintragungen Lernfeld
+      </button>
+    </li>
+      <li class="nav-item" role="presentation">
+      <button class="nav-link"
+              id="wochenplan-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#wochenplan"
+              type="button"
+              role="tab"
+              aria-controls="wochenplan"
+              aria-selected="false">
+        Wochenplan
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link"
+              id="kurs-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#kurs"
+              type="button"
+              role="tab"
+              aria-controls="kurs"
+              aria-selected="false">
+        Kursrückmeldungen
+      </button>
+    </li>
+  <li class="nav-item" role="presentation">
+      <button class="nav-link"
+              id="leistungsrueck-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#leistungsrueck"
+              type="button"
+              role="tab"
+              aria-controls="leistungsrueck"
+              aria-selected="false">
+        Leistungsrückmeldungen
+        </button>
+    </li>
+
+  </ul>
+
+    <!-- ... deine bestehenden Tabs ... -->
+
+  <div class="tab-content pt-3">
+      {% include "personen/tabs/stammdaten.html" %}
+      {% include "personen/tabs/lernfelder.html" %}
+      {% include "personen/tabs/eintragungen_lernfeld.html" %}
+      {% include "personen/tabs/eintragungen_woche.html" %}
+      {% include "personen/tabs/wochenplan.html" %}
+      {% include "personen/tabs/kurs_teilnahmen.html" %}
+      {% include "personen/tabs/leistungsrueck.html" %}
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form      = document.getElementById('stammdaten-form');
+    const inputs    = form.querySelectorAll('input, textarea');
+    const editBtn   = document.getElementById('edit-btn');
+    const saveBtn   = document.getElementById('save-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+
+    // Originalwerte sichern
+    const original = {};
+    inputs.forEach(el => { original[el.name] = el.value; });
+
+    // "Ändern" entsperrt alle Felder
+    editBtn.addEventListener('click', () => {
+      inputs.forEach(el => el.disabled = false);
+      editBtn.style.display   = 'none';
+      saveBtn.style.display   = 'inline-block';
+      cancelBtn.style.display = 'inline-block';
+    });
+
+    // "Abbrechen" stellt die Originalwerte wieder her
+    cancelBtn.addEventListener('click', () => {
+      inputs.forEach(el => {
+        el.value    = original[el.name];
+        el.disabled = true;
+      });
+      editBtn.style.display   = 'inline-block';
+      saveBtn.style.display   = 'none';
+      cancelBtn.style.display = 'none';
+    });
+
+    // Initial: alle Felder gesperrt, nur "Ändern" sichtbar
+    inputs.forEach(el => el.disabled = true);
+    saveBtn.style.display   = 'none';
+    cancelBtn.style.display = 'none';
+  });
+</script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const triggers = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            triggers.forEach(el => new bootstrap.Tooltip(el));
+        });
+    </script>
+
+
+{% endblock %}

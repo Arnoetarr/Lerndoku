@@ -1,0 +1,51 @@
+{# personen/tabs/leistungsrueck.html oder direkt im Tab in detail.html #}
+<h3 class="h5 mb-3">Leistungsrückmeldungen</h3>
+<div class="d-flex justify-content-end mb-2">
+  <a class="btn btn-riesenkleinblau btn-sm"
+     href="{{ url_for('leistung.neuer_eintrag', person_id=person.id) }}">
+    Neue Leistungsrückmeldung eintragen
+  </a>
+</div>
+
+<div class="accordion" id="leistungsRueckAccordion">
+  {% for lf, entries in rueckmeldungen_by_lernfeld.items() %}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="lf{{ loop.index }}">
+        <button class="accordion-button collapsed" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseLeistung{{ loop.index }}"
+                aria-expanded="false"
+                aria-controls="collapseLeistung{{ loop.index }}">
+          {{ lf }}
+        </button>
+      </h2>
+      <div id="collapseLeistung{{ loop.index }}" class="accordion-collapse collapse"
+           aria-labelledby="lf{{ loop.index }}" data-bs-parent="#leistungsRueckAccordion">
+        <div class="accordion-body p-2">
+          <table class="table table-sm mb-0">
+            <thead>
+              <tr>
+                <th>Datum</th>
+                <th>Thema</th>
+                <th>Rückmeldung</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for e in entries %}
+                <tr>
+                  <td>{{ e.datum.strftime('%d.%m.%Y') }}</td>
+                  <td>{{ e.thema }}</td>
+                  <td>{{ e.rueckmeldung|replace('\n', '<br>')|safe }}</td>
+                  <td>{{ e.note }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <p class="text-muted">Keine Rückmeldungen erfasst.</p>
+  {% endfor %}
+</div>

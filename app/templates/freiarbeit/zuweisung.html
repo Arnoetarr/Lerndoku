@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Themenzuweisung{% endblock %}
+{% block content %}
+<h2>Thema zuweisen für {{ person.vorname }} {{ person.nachname }}</h2>
+
+<form method="POST">
+  <div class="mb-3">
+    <label for="thema_basistext">Thema</label>
+    <input type="text" class="form-control" name="thema_basistext" value="{{ zuweisung.thema_basistext if zuweisung else '' }}">
+  </div>
+  <div class="mb-3">
+    <label for="bemerkung">Bemerkung</label>
+    <textarea class="form-control" name="bemerkung" rows="2">{{ zuweisung.bemerkung if zuweisung else '' }}</textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Speichern</button>
+  <a href="{{ url_for('freiarbeit.neuer_eintrag', lernfeld_id=lernfeld_id, person_id=person.id) }}"
+   class="btn btn-riesenkleinblau ms-2">
+  Abbrechen</a>
+</form>
+{% endblock %}

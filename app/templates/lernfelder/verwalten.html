@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Lernfelder verwalten{% endblock %}
+
+{% block content %}
+<h1>Lernfelder verwalten</h1>
+
+<form method="POST" class="mb-4">
+  {{ form.hidden_tag() }}
+  <div class="mb-3">
+    {{ form.name.label }} {{ form.name(class="form-control") }}
+  </div>
+  <button type="submit" class="btn btn-riesenkleinblau">{{ form.submit.label }}</button>
+</form>
+
+<h2>Vorhandene Lernfelder</h2>
+<ul class="list-group">
+  {% for lf in lernfelder %}
+    <li class="list-group-item">{{ lf.name }}</li>
+  {% else %}
+    <li class="list-group-item text-muted">Noch keine Lernfelder vorhanden.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Kurs dokumentieren{% endblock %}
+
+{% block content %}
+<h1>Kurs dokumentieren</h1>
+<form method="POST" id="kurs-form">
+  {{ form.hidden_tag() }}
+
+  <!-- Erste Zeile: Lernfeld, Gruppe, Datum, Phase -->
+  <div class="row mb-3">
+    <div class="col-md-3">
+      {{ form.lernfeld.label(class="form-label") }}
+      {{ form.lernfeld(id="lernfeld", class="form-select") }}
+    </div>
+    <div class="col-md-3">
+      {{ form.lerngruppe.label(class="form-label") }}
+      {{ form.lerngruppe(id="lerngruppe", class="form-select") }}
+    </div>
+    <div class="col-md-3">
+      {{ form.datum.label(class="form-label") }}
+      {{ form.datum(id="datum", class="form-control") }}
+    </div>
+    <div class="col-md-3">
+      {{ form.phase.label(class="form-label") }}
+      {{ form.phase(id="phase", class="form-select") }}
+    </div>
+  </div>
+
+  <!-- Zweite Zeile: Thema -->
+  <div class="row mb-4">
+    <div class="col-12">
+      {{ form.thema.label(class="form-label") }}
+      {{ form.thema(id="thema", class="form-control") }}
+    </div>
+  </div>
+
+  <!-- Tabelle der Kinder -->
+  <div class="mb-4">
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm">
+        <colgroup>
+          <col style="width: 20%;">  {# Kind #}
+          <col style="width: 10%;">  {# krank #}
+          <col style="width: 10%;">  {# nicht im Kurs #}
+          <col style="width: 60%;">  {# Notiz #}
+        </colgroup>
+        <thead class="table-light">
+          <tr>
+            <th>Kind</th>
+            <th class="text-center">krank</th>
+            <th class="text-center">nicht im Kurs</th>
+            <th>Notiz</th>
+          </tr>
+        </thead>
+        <tbody id="kinder-table-body">
+          {% for p in personen %}
+          <tr>
+            <td class="align-middle">{{ p.name_mit_spitzname }}</td>
+            <td class="text-center align-middle">
+              <input type="checkbox" name="krank" value="{{ p.id }}">
+            </td>
+            <td class="text-center align-middle">
+              <input type="checkbox" name="nicht_im_kurs" value="{{ p.id }}">
+            </td>
+            <td>
+              <input type="text"
+                     name="notiz_{{ p.id }}"
+                     class="form-control form-control-sm"
+                     placeholder="Notiz…">
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-riesenkleinblau">Speichern</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const grp   = document.getElementById("lerngruppe");
+  const tbody = document.getElementById("kinder-table-body");
+
+  function ladeKinder(grpId) {
+    fetch(`{{ url_for('kurse.api_personen') }}?lerngruppe_id=${grpId}`)
+      .then(r => r.json())
+      .then(data => {
+        tbody.innerHTML = "";
+        data.forEach(p => {
+          const tr = document.createElement("tr");
+
+          // Spalte Kind
+          const tdName = document.createElement("td");
+          tdName.classList.add("align-middle");
+          tdName.textContent = p.text;
+          tr.append(tdName);
+
+          // Spalte krank
+          const tdKrank = document.createElement("td");
+          tdKrank.classList.add("text-center","align-middle");
+          tdKrank.innerHTML = `<input type="checkbox" name="krank" value="${p.id}">`;
+          tr.append(tdKrank);
+
+          // Spalte nicht im Kurs
+          const tdNicht = document.createElement("td");
+          tdNicht.classList.add("text-center","align-middle");
+          tdNicht.innerHTML = `<input type="checkbox" name="nicht_im_kurs" value="${p.id}">`;
+          tr.append(tdNicht);
+
+          // Spalte Notiz
+          const tdNotiz = document.createElement("td");
+          tdNotiz.innerHTML = `<input type="text" name="notiz_${p.id}" class="form-control form-control-sm" placeholder="Notiz…">`;
+          tr.append(tdNotiz);
+
+          tbody.append(tr);
+        });
+      });
+  }
+
+  grp.addEventListener("change", () => {
+    if (grp.value) ladeKinder(grp.value);
+    else tbody.innerHTML = "";
+  });
+
+  // Initial-Load, falls Gruppe schon gesetzt
+  if (grp.value) {
+    ladeKinder(grp.value);
+  }
+});
+</script>
+{% endblock %}

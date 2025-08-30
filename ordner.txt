@@ -1,0 +1,38 @@
+Auflistung der Ordnerpfade für Volume OS
+Volumeseriennummer : DA39-98B2
+C:.
+|   ordner.txt
+|   README.md
+|   requirements.txt
+|   run.py
+|   
++---app
+|   |   forms.py
+|   |   models.py
+|   |   ordnerstruktur.txt
+|   |   __init__.py
+|   |   
+|   +---routes
+|   |       freiarbeit.py
+|   |       kurse.py
+|   |       personen.py
+|   |       __init__.py
+|   |       
+|   +---static
+|   |   \---css
+|   |           style.css
+|   |           
+|   \---templates
+|       |   base.html
+|       |   index.html
+|       |   
+|       +---freiarbeit
+|       |       formular.html
+|       |       
+|       \---personen
+|               detail.html
+|               liste.html
+|               
+\---instance
+        config.py
+        

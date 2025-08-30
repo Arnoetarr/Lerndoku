@@ -1,0 +1,28 @@
+<div class="tab-pane fade" id="kurs" role="tabpanel" aria-labelledby="kurs-tab">
+  {% if kurs_teilnahmen %}
+    <table class="table table-sm">
+      <thead class="table-light">
+        <tr>
+          <th>Datum</th>
+          <th>Phase</th>
+          <th>Lernfeld</th>
+          <th>Thema</th>
+          <th>Notiz</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for teilnahme, sitzung in kurs_teilnahmen %}
+        <tr>
+          <td>{{ sitzung.datum.strftime('%d.%m.%Y') }}</td>
+          <td>{{ sitzung.phase }}</td>
+          <td>{{ sitzung.lernfeld.name }}</td>
+          <td>{{ sitzung.thema }}</td>
+          <td>{{ teilnahme.notiz }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="pt-3">Für diese Person liegen noch keine Kurs-Einträge vor.</p>
+  {% endif %}
+</div>

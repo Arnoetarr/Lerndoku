@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Startseite{% endblock %}
+
+{% block content %}
+  <div class="jumbotron">
+    <h1 class="display-6">Willkommen zur Lerndoku</h1>
+    <p class="lead">Diese Anwendung unterstützt die Dokumentation von Lernprozessen in Freiarbeit und Kursen.</p>
+    <hr class="my-4">
+    <p>Bitte wähle eine Funktion:</p>
+
+    <a class="btn btn-riesenkleinblau btn-lg" href="{{ url_for('personen.liste') }}" role="button">Personenübersicht</a>
+    <a class="btn btn-riesenkleinblau btn-lg" href="{{ url_for('lernfelder.verwalten') }}" role="button">Lernfelder verwalten</a>
+
+    {% if lernfelder %}
+      <a class="btn btn-riesenkleinblau btn-lg" href="{{ url_for('freiarbeit.neuer_eintrag', lernfeld_id=lernfelder[0].id) }}" role="button">
+        Freiarbeit dokumentieren
+      </a>
+    {% else %}
+      <a class="btn btn-riesenkleinblau btn-lg disabled" role="button">
+        Freiarbeit (kein Lernfeld vorhanden)
+      </a>
+
+    {% endif %}
+  <a class="btn btn-riesenkleinblau btn-lg" href="{{ url_for('kurse.dokumentieren') }}" role="button">Kurs dokumentieren</a>
+  <a class="btn btn-riesenkleinblau btn-lg" href="{{ url_for('leistung.neuer_eintrag') }}" role="button">Leistungsrückmeldung eintragen</a>
+  <a class="btn btn-riesenkleinblau btn-lg" href="{{ url_for('leistung.neuer_eintrag') }}" role="button">[Gruppen verwalten]</a>
+  </div>
+{% endblock %}
+# ToDo: Konsitens leistung oer ureckmeldugnen, such ein leistung-formuarl

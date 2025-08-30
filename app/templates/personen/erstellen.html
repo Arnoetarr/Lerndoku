@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Neue Person{% endblock %}
+
+{% block content %}
+<h1>Neue Person hinzufügen</h1>
+
+<form method="POST">
+  {{ form.hidden_tag() }}
+  
+  <div class="mb-3">{{ form.vorname.label }} {{ form.vorname(class="form-control") }}</div>
+  <div class="mb-3">{{ form.nachname.label }} {{ form.nachname(class="form-control") }}</div>
+  <div class="mb-3">{{ form.spitzname.label }} {{ form.spitzname(class="form-control") }}</div>
+  <div class="mb-3">{{ form.lerngruppe.label }} {{ form.lerngruppe(class="form-control") }}</div>
+  <div class="mb-3">{{ form.stufe.label }} {{ form.stufe(class="form-control") }}</div>
+  <div class="mb-3">{{ form.foerderbedarf.label }} {{ form.foerderbedarf(class="form-control", rows=2) }}</div>
+  <div class="mb-3">{{ form.foerderbedarf_massnahmen.label }} {{ form.foerderbedarf_massnahmen(class="form-control", rows=2) }}</div>
+  <div class="mb-3">{{ form.ziele.label }} {{ form.ziele(class="form-control", rows=3) }}</div>
+  
+  <button type="submit" class="btn btn-riesenkleinblau">{{ form.submit.label }}</button>
+  <a href="{{ url_for('personen.liste') }}"
+   class="btn btn-secondary ms-2">
+  Abbrechen</a>
+</form>
+{% endblock %}

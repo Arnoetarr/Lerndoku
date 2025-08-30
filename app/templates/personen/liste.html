@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Personenübersicht{% endblock %}
+
+{% block content %}
+
+<h1>Personen</h1>
+
+<form method="POST" onsubmit="return weiterleitenZurPerson();">
+  <div class="row align-items-center g-2 mb-4">
+    <div class="col-md-6 col-lg-4">
+      <div class="input-group">
+        <input class="form-control" list="personenliste" id="person-suche" placeholder="Name eingeben..." autocomplete="off">
+        <input type="hidden" name="person_id" id="person-id-hidden">
+        <button type="submit" class="btn btn-riesenkleinblau">Anzeigen</button>
+      </div>
+      <datalist id="personenliste"></datalist>
+    </div>
+    <div class="col-auto">
+      <a class="btn btn-riesenkleinblau" href="{{ url_for('personen.erstellen') }}">Person hinzufügen</a>
+    </div>
+    <div class="col-auto">
+      <a class="btn btn-riesenkleinblau" href="{{ url_for('personen.importformular') }}">Personen importieren</a>
+    </div>
+  </div>
+</form>
+
+
+<div class="row">
+  {% for gruppe, personen in gruppiert.items() %}
+    <div class="col-md-3 mb-4">
+      <div class="card h-100">
+        <div class="card-header bg-light fw-bold">
+          {{ gruppe }}
+        </div>
+        <ul class="list-group list-group-flush">
+          {% for p in personen %}
+            <li class="list-group-item">
+              <a href="{{ url_for('personen.detail', person_id=p.id) }}" class="text-dark">
+                {{ p.vorname }}{% if p.spitzname %} ({{ p.spitzname }}){% endif %} {{ p.nachname }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+
+<script>
+  const input = document.getElementById("person-suche");
+  const datalist = document.getElementById("personenliste");
+  const hiddenIdField = document.getElementById("person-id-hidden");
+
+  let cache = [];
+
+  // 🔁 Suche bei Eingabe (nur API-Aufruf)
+  input.addEventListener("keyup", async function () {
+    const begriff = input.value.trim();
+    if (begriff.length < 2) return;
+
+    const res = await fetch(`/personen/api/suche?q=${encodeURIComponent(begriff)}`);
+    const daten = await res.json();
+    cache = daten;
+
+    datalist.innerHTML = "";
+    daten.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.anzeige;
+      opt.dataset.id = p.id;
+      datalist.appendChild(opt);
+    });
+
+    console.log("🔍 Vorschläge aktualisiert:", daten);
+  });
+
+  // ✅ Auswahl aus Vorschlägen → ID merken
+  input.addEventListener("input", function () {
+    const eingabe = input.value.trim();
+    const treffer = cache.find(p => p.anzeige === eingabe);
+    if (treffer) {
+      hiddenIdField.value = treffer.id;
+      console.log("✅ ID direkt aus cache:", treffer.id);
+    } else {
+      hiddenIdField.value = "";
+      console.log("⚠️ Keine ID gefunden.");
+    }
+  });
+
+  // 🚀 Beim Klick auf „Anzeigen“
+  function weiterleitenZurPerson() {
+    const id = hiddenIdField.value;
+    console.log("➡️ Weiterleitung mit ID:", id);
+    if (id) {
+      window.location.href = `/personen/${id}`;
+    } else {
+      alert("Bitte gültige Person aus der Liste auswählen.");
+    }
+    return false;
+  }
+    // ⌨️ Enter auslösen, wenn nur 1 Treffer im Dropdown
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      const eingabe = input.value.trim();
+
+      if (cache.length === 1 && cache[0].anzeige.toLowerCase().startsWith(eingabe.toLowerCase())) {
+        hiddenIdField.value = cache[0].id;
+        console.log("⚡ Auto-Auswahl per Enter:", cache[0]);
+        window.location.href = `/personen/${cache[0].id}`;
+      } else {
+        weiterleitenZurPerson();
+      }
+    }
+  });
+
+</script>
+
+
+
+
+{% endblock %}

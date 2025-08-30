@@ -1,0 +1,75 @@
+<div class="tab-pane fade show active"
+     id="stammdaten"
+     role="tabpanel"
+     aria-labelledby="stammdaten-tab">
+  <form id="stammdaten-form" method="POST">
+    {{ form.hidden_tag() }}
+
+    <!-- Zeile 1: Vorname / Nachname / Spitzname -->
+    <div class="row mb-3">
+      <div class="col-md-4">
+        {{ form.vorname.label }}
+        {{ form.vorname(class="form-control", disabled="disabled") }}
+      </div>
+      <div class="col-md-4">
+        {{ form.nachname.label }}
+        {{ form.nachname(class="form-control", disabled="disabled") }}
+      </div>
+      <div class="col-md-4">
+        {{ form.spitzname.label }}
+        {{ form.spitzname(class="form-control", disabled="disabled") }}
+      </div>
+    </div>
+
+    <!-- Zeile 2: Lerngruppe / Stufe -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        {{ form.lerngruppe.label }}
+        {{ form.lerngruppe(class="form-control", disabled="disabled") }}
+      </div>
+      <div class="col-md-6">
+        {{ form.stufe.label }}
+        {{ form.stufe(class="form-control", disabled="disabled") }}
+      </div>
+    </div>
+
+    <!-- Zeile 3: Förderbedarf / Fördermaßnahmen -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        {{ form.foerderbedarf.label }}
+        {{ form.foerderbedarf(class="form-control", rows="2", disabled="disabled") }}
+      </div>
+      <div class="col-md-6">
+        {{ form.foerderbedarf_massnahmen.label }}
+        {{ form.foerderbedarf_massnahmen(class="form-control", rows="2", disabled="disabled") }}
+      </div>
+    </div>
+
+    <!-- Zeile 4: Ziele -->
+    <div class="row mb-3">
+      <div class="col-12">
+        {{ form.ziele.label }}
+        {{ form.ziele(class="form-control", rows="3", disabled="disabled") }}
+      </div>
+    </div>
+
+    <!-- Action-Buttons -->
+    <button type="button"
+            id="edit-btn"
+            class="btn btn-riesenkleinblau">
+      Ändern
+    </button>
+    <button type="submit"
+            id="save-btn"
+            class="btn btn-riesenkleinblau"
+            style="display: none;">
+      Speichern
+    </button>
+    <button type="button"
+            id="cancel-btn"
+            class="btn btn-secondary"
+            style="display: none;">
+      Abbrechen
+    </button>
+  </form>
+</div>

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Leistungsrückmeldung eintragen{% endblock %}
+
+{% block content %}
+<h1>Leistungsrückmeldung eintragen</h1>
+
+<form method="POST">
+  {{ form.hidden_tag() }}
+  <!-- Kind suchen -->
+  <div class="mb-3">
+    <label for="person-suche" class="form-label">Kind auswählen</label>
+    <input type="text"
+           id="person-suche"
+           class="form-control"
+           placeholder="Name eingeben…"
+           autocomplete="off"
+           value="{{ person_anzeige }}">
+    {{ form.person_id }}
+  </div>
+
+  {% if person %}
+    <!-- Jetzt das Formular anzeigen -->
+    <div class="mb-3">
+      {{ form.lernfeld.label(class="form-label") }}
+      {{ form.lernfeld(class="form-select") }}
+    </div>
+    <div class="mb-3">
+      {{ form.datum.label(class="form-label") }}
+      {{ form.datum(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.thema.label(class="form-label") }}
+      {{ form.thema(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.rueckmeldung.label(class="form-label") }}
+      {{ form.rueckmeldung(class="form-control", rows=4) }}
+    </div>
+    <div class="mb-3">
+      {{ form.note.label(class="form-label") }}
+      {{ form.note(class="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-riesenkleinblau">Speichern</button>
+  {% else %}
+    <p class="text-muted">Bitte zuerst ein Kind auswählen.</p>
+  {% endif %}
+</form>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script>
+  $(function() {
+    $("#person-suche").autocomplete({
+      minLength: 2,
+      source(request, response) {
+        $.getJSON(
+          "{{ url_for('leistung.api_personensuche') }}",
+          { q: request.term },
+          data => response(data.map(item => ({
+            label: item.anzeige,
+            value: item.anzeige,
+            id: item.id
+          })))
+        );
+      },
+      select(e, ui) {
+        $("#person-suche").val(ui.item.value);
+        $('input[name="person_id"]').val(ui.item.id);
+        // Sofort absenden, damit das Formular für das Kind geladen wird:
+        $(e.target.form).submit();
+        return false;
+      }
+    });
+  });
+</script>
+{% endblock %}
